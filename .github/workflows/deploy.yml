@@ -42,5 +42,5 @@ jobs:
 
             - name: Smoke Test
               run: |
-                sleep 30
+                sleep 90
                 python ./tests/smoke_tests/main.py
