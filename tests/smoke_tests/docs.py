@@ -2,7 +2,7 @@ import requests
 import os
 
 API_URL = os.getenv("API_URL", "http://localhost:4000")
-VERSION_URL = f"{API_URL}/api/v1/version"
+VERSION_URL = f"{API_URL}/version"
 DOCS_URL = f"{API_URL}/docs"
 
 def test_version():

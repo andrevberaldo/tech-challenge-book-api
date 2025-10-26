@@ -6,14 +6,14 @@ router = APIRouter(prefix="/api/v1", tags=["Auth"])
 basic_auth = HTTPBasic()
 jwt_auth = HTTPBearer()
 
-@router.post("/auth/login")
+@router.get("/auth/login")
 async def get_api_token(credentials: HTTPBasicCredentials = Depends(basic_auth)):
     auth_service = AuthService()
 
     return auth_service.generate_access_and_refresh_token(credentials)
     
     
-@router.post("/auth/refresh")
+@router.get("/auth/refresh")
 async def refresh_api_token(credentials: HTTPAuthorizationCredentials = Depends(jwt_auth)):
     auth_service = AuthService()
 

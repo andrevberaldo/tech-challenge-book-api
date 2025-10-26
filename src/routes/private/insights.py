@@ -1,6 +1,7 @@
 """Endpoints públicos para estatísticas e insights dos livros."""
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
+from src.domain.auth.service.jwt_utils import JWTUtils
 from src.scripts.book_statistics import (
 	get_books_in_price_range,
 	get_category_statistics,
@@ -19,27 +20,27 @@ def _handle_dataset_errors(func, *args, **kwargs):
 		raise HTTPException(status_code=500, detail="Processed dataset not found") from exc
 
 
-@router.get("/stats/overview")
+@router.get("/stats/overview", dependencies=[Depends(JWTUtils.validate_token)])
 async def stats_overview():
 	"""Retorna estatísticas gerais da coleção de livros."""
 	return _handle_dataset_errors(get_overview_statistics)
 
 
-@router.get("/stats/categories")
+@router.get("/stats/categories", dependencies=[Depends(JWTUtils.validate_token)])
 async def stats_by_category():
 	"""Retorna métricas agregadas por categoria."""
 	categories = _handle_dataset_errors(get_category_statistics)
 	return {"categories": categories, "total_categories": len(categories)}
 
 
-@router.get("/books/top-rated")
+@router.get("/books/top-rated", dependencies=[Depends(JWTUtils.validate_token)])
 async def books_top_rated(limit: int = Query(default=10, ge=1, le=100)):
 	"""Retorna os livros com as melhores avaliações."""
 	books = _handle_dataset_errors(get_top_rated_books, limit)
 	return {"items": books, "limit": limit, "returned": len(books)}
 
 
-@router.get("/books/price-range")
+@router.get("/books/price-range", dependencies=[Depends(JWTUtils.validate_token)])
 async def books_by_price_range(
 	min_price: float = Query(..., ge=0.0, alias="min"),
 	max_price: float = Query(..., ge=0.0, alias="max"),
