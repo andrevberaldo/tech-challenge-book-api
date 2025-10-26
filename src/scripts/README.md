@@ -1,101 +1,146 @@
-# Pipeline de Processamento de Dados de Livros
+# Scripts - Módulos de Processamento de Dados
 
-Esta pipeline executa ETL (Extract, Transform, Load) completo nos dados de livros, realizando limpeza básica e feature engineering avançado.
+Este diretório contém os módulos responsáveis pela pipeline de ETL, análises estatísticas e utilitários para consumo de dados por modelos de ML.
 
-## Estrutura da Pipeline
+---
 
-### 📁 Arquivos Principais
+## Estrutura de Arquivos
 
-- `data_types.py` - Modelos Pydantic e schemas de validação
-- `cleaning_pipeline.py` - Pipeline de limpeza básica dos dados
-- `feature_pipeline.py` - Pipeline de feature engineering
-- `main_pipeline.py` - Orquestração completa da pipeline
-- `run_pipeline.py` - Script executável com CLI
+### **Core Pipeline**
 
-## 🧹 Pipeline de Limpeza (Fase 1)
+#### `data_processing_pipeline.py`
+Pipeline principal que orquestra a execução completa do processamento de dados.
+- Executa limpeza de dados (data cleaning)
+- Executa feature engineering
+- Gera logs e estatísticas de execução
+- Pode ser executado diretamente: `python -m src.scripts.data_processing_pipeline`
 
-**Entrada:** `data/raw/all_books_with_images.csv`  
-**Saída:** `data/processed/books_processed.csv`
+#### `data_cleaning.py`
+Módulo responsável pela limpeza e validação dos dados brutos.
+- Remove/trata valores nulos e duplicatas
+- Normaliza categorias problemáticas
+- Cria IDs únicos
+- Transforma colunas (ex: availability yes/no → 1/0)
+- **Entrada:** `data/raw/all_books_with_images.csv`
+- **Saída:** `data/processed/books_processed.csv`
 
-### Operações Realizadas:
+#### `feature_engineering.py`
+Cria features derivadas para análise e modelos de ML.
+- Categorização de preços (price_range)
+- Features de título (has_subtitle, has_series, title_length, etc.)
+- Categorização de ratings e stock
+- One-hot encoding de categorias
+- Score de popularidade
+- **Entrada:** `data/processed/books_processed.csv`
+- **Saída:** `data/features/books_features.csv`
 
-1. **Verificação de nulos** - Valida integridade dos dados
-2. **Criação de ID único** - Adiciona coluna `id` com identificadores únicos
-3. **Limpeza de categorias** - Substitui categorias problemáticas ('Add a comment', 'Default') por 'Outros'
-4. **Transformação availability** - Converte 'yes'/'no' para 1/0
-5. **Validação final** - Garante consistência dos dados processados
+---
 
-### Resultados da Limpeza:
-- ✅ 1000 registros processados sem nulos
-- 🏷️ 219 categorias problemáticas limpas
-- 🔢 1000 IDs únicos criados
+### **Data Types & Configuration**
 
-## ⚙️ Pipeline de Feature Engineering (Fase 2)
+#### `data_types.py`
+Define modelos Pydantic e tipos de dados usados em toda a aplicação.
+- `PipelineConfig`: Configuração da pipeline (caminhos, parâmetros)
+- `PipelineStats`: Estatísticas de execução
+- Enums: `PriceRange`, `RatingCategory`, `StockLevel`
+- Garante validação e type safety
 
-**Entrada:** `data/processed/books_processed.csv`  
-**Saída:** `data/features/books_features.csv`
+---
 
-### Features Criadas (59 total):
+### **Statistics & ML Data**
 
-#### 1. **Categorização de Preços**
-- `price_range`: Baixo (≤20), Médio (20-40), Alto (40-50), Premium (>50)
+#### `book_statistics.py`
+Funções para cálculo de estatísticas sobre a coleção de livros.
+- `get_overview_statistics()`: Total de livros, preço médio, distribuição de ratings
+- `get_category_statistics()`: Métricas agregadas por categoria
+- `get_top_rated_books()`: Livros com melhores avaliações
+- `get_books_in_price_range()`: Filtro por faixa de preço
+- Usado pelos endpoints `/api/v1/stats/*` e `/api/v1/books/*`
 
-#### 2. **Features de Título** (6 features)
-- `has_subtitle`: Título contém ':' (307 livros)
-- `has_series`: Título contém '(' (345 livros) 
-- `starts_with_the`: Começa com 'The' (269 livros)
-- `title_length`: Comprimento em caracteres (média: 39.1)
-- `title_word_count`: Número de palavras (média: 6.7)
-- `has_numbers`: Contém números (365 livros)
+#### `ml_data.py`
+Utilitários para preparação de dados voltados a modelos de ML.
+- Carregamento com cache do dataset de features
+- `get_features_dataframe()`: Retorna features completas
+- `get_training_split()`: Divisão treino/teste (70/30 padrão)
+- Casting e normalização de tipos
+- Usado pelos endpoints `/api/v1/ml/*`
 
-#### 3. **Categorização de Ratings**
-- `rating_category`: Muito Baixo/Baixo/Médio/Alto/Muito Alto
+#### `ml_datasets.py`
+Preparação de datasets específicos para treinamento/inferência.
+- `get_feature_matrix()`: Matriz de features para modelos
+- `get_training_dataset()`: Dataset formatado para treino/teste
+- Suporta seleção de colunas e splits customizados
 
-#### 4. **Níveis de Stock**
-- `stock_level`: Baixo (1-5), Médio (6-15), Alto (16+)
+---
 
-#### 5. **Score de Popularidade**
-- `popularity_score`: Combinação de rating e stock (0.154-0.973)
-- Fórmula: `(rating/5) × 0.7 + (stock_norm) × 0.3`
+### **Web Scraping**
 
-#### 6. **One-Hot Encoding de Categorias** (49 colunas)
-- `category_*`: Uma coluna binária para cada categoria única
-- Exemplo: `category_fantasy` (48 livros), `category_nonfiction` (110 livros)
+#### `scrapper_lib.py`
+Biblioteca para extração de dados de livros da web.
+- `trigger_scrap()`: Inicia processo de scraping
+- Coleta títulos, preços, ratings, categorias, imagens
+- Salva dados brutos em `data/raw/all_books_with_images.csv`
+- Usado pelo endpoint `/scrapper`
 
-## 🚀 Como Executar
+---
 
-### Opções de Execução:
+## Uso Rápido
 
+### Executar Pipeline Completa
 ```bash
-# Pipeline completa (limpeza + features)
-python scripts/run_pipeline.py
-
-# Apenas limpeza
-python scripts/run_pipeline.py --cleaning-only
-
-# Apenas features (requer dados processados)
-python scripts/run_pipeline.py --features-only
-
-# Com configuração customizada
-python scripts/run_pipeline.py --config config.json
-
-# Mostrar informações
-python scripts/run_pipeline.py --info
-
-# Criar arquivo de configuração padrão
-python scripts/run_pipeline.py --create-config config.json
+python -m src.scripts.data_processing_pipeline
 ```
 
-### Configuração Padrão:
+### Importar em Código
+```python
+from src.scripts import run_pipeline
+from src.scripts.book_statistics import get_overview_statistics
+from src.scripts.ml_data import get_training_split
 
-```json
-{
-  "input_file": "data/raw/all_books_with_images.csv",
-  "processed_output": "data/processed/books_processed.csv", 
-  "features_output": "data/features/books_features.csv",
-  "default_category": "Outros",
-  "problematic_categories": ["Add a comment", "Default"]
-}
+# Executar pipeline
+stats = run_pipeline()
+
+# Obter estatísticas
+overview = get_overview_statistics()
+
+# Preparar dados para ML
+train_df, test_df = get_training_split(ratio=0.7)
+```
+
+---
+
+## Fluxo de Dados
+
+```
+[Web Scraping]
+    ↓
+data/raw/all_books_with_images.csv
+    ↓
+[Data Cleaning]
+    ↓
+data/processed/books_processed.csv
+    ↓
+[Feature Engineering]
+    ↓
+data/features/books_features.csv
+    ↓
+[Statistics & ML APIs]
+```
+
+---
+
+## Configuração
+
+A pipeline usa `PipelineConfig` definido em `data_types.py`:
+
+```python
+PipelineConfig(
+    input_file="data/raw/all_books_with_images.csv",
+    processed_output="data/processed/books_processed.csv",
+    features_output="data/features/books_features.csv",
+    default_category="Outros",
+    problematic_categories=["Add a comment", "Default"]
+)
 ```
 
 ## 📊 Resultados da Última Execução

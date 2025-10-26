@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
-from src.routes.public import health, home, scrapper
+from src.routes.public import health, home, scrapper, insights, ml_ready, data_process
 from src.routes.private import private, admin
 from src.routes.private import login
 import logging
@@ -19,3 +19,6 @@ api.include_router(health.router)
 api.include_router(private.router)
 api.include_router(admin.router)
 api.include_router(scrapper.router)
+api.include_router(insights.router)
+api.include_router(ml_ready.router)
+api.include_router(data_process.router)

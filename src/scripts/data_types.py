@@ -8,7 +8,12 @@ garantindo tipagem segura e validação dos dados.
 from typing import List, Dict
 from pydantic import BaseModel, Field
 from enum import Enum
+from pathlib import Path
 import polars as pl
+
+# Diretório base do projeto
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DATA_DIR = PROJECT_ROOT / "src" / "data"
 
 
 class PriceRange(str, Enum):
@@ -90,9 +95,9 @@ class BookFeatures(BaseModel):
 
 class PipelineConfig(BaseModel):
     """Configuração da pipeline."""
-    input_file: str = "data/raw/all_books_with_images.csv"
-    processed_output: str = "data/processed/books_processed.csv"
-    features_output: str = "data/features/books_features.csv"
+    input_file: str = str(DATA_DIR / "raw" / "all_books_with_images.csv")
+    processed_output: str = str(DATA_DIR / "processed" / "books_processed.csv")
+    features_output: str = str(DATA_DIR / "features" / "books_features.csv")
     
     # Configurações de limpeza
     default_category: str = "Outros"
