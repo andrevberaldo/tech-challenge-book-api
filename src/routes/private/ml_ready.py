@@ -1,4 +1,4 @@
-"""Endpoints públicos voltados ao consumo de modelos de ML."""
+"""Endpoints Privados voltados ao consumo de modelos de ML."""
 
 from __future__ import annotations
 from typing import Annotated, Any, Dict, List, Optional

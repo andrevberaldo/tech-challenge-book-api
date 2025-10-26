@@ -1,4 +1,4 @@
-"""Endpoint público para executar a pipeline de processamento de dados."""
+"""Endpoint Privado para executar a pipeline de processamento de dados."""
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, status, Depends
 from fastapi.responses import JSONResponse

@@ -9,5 +9,8 @@ router = APIRouter(tags=["Public"])
 
 @router.get("/")
 async def home():
+    """
+        Retorna um landpage com o nome dos integrantes e link para a documentação da API
+    """
     file_path = os.path.join(TEMPLATES_DIR, "home.html")
     return FileResponse(file_path)
