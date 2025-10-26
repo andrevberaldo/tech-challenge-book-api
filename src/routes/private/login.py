@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials, HTTPAuthorizationCredentials, HTTPBearer
 from src.domain.auth.service.auth_service import AuthService
 
-router = APIRouter()
+router = APIRouter(prefix="/api/v1", tags=["Auth"])
 basic_auth = HTTPBasic()
 jwt_auth = HTTPBearer()
 

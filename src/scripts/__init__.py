@@ -7,7 +7,7 @@ feature engineering.
 """
 
 from .data_types import PipelineConfig, PipelineStats
-from .main_pipeline import run_full_pipeline, run_cleaning_only, run_features_only
+from .data_processing_pipeline import run_pipeline
 
 __version__ = "1.0.0"
 __author__ = "Tech Challenge Team"
@@ -15,7 +15,5 @@ __author__ = "Tech Challenge Team"
 __all__ = [
     "PipelineConfig",
     "PipelineStats", 
-    "run_full_pipeline",
-    "run_cleaning_only",
-    "run_features_only"
+    "run_pipeline",
 ]
