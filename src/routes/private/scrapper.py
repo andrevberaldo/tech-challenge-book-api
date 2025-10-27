@@ -1,14 +1,15 @@
-from fastapi import APIRouter, BackgroundTasks, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from src.scripts.scrapper_lib import trigger_scrap
+from src.domain.auth.service.jwt_utils import JWTUtils
 
-router = APIRouter(prefix="/api/v1", tags=["Endpoints Core"])
+router = APIRouter(prefix="/api/v1", tags=["Data Pipeline"])
 
 # Estado do scrapper (controle de execução única)
 scrapper_state = {"is_running": False, "last_result": None}
 
 
-@router.post("/scrapper", status_code=status.HTTP_202_ACCEPTED)
+@router.put("/scrapper", status_code=status.HTTP_202_ACCEPTED, dependencies=[Depends(JWTUtils.validate_token)])
 async def trigger_scrapping(background_tasks: BackgroundTasks):
     """
     Inicia o scraping de dados em background.
@@ -34,7 +35,7 @@ async def trigger_scrapping(background_tasks: BackgroundTasks):
     )
 
 
-@router.get("/scrapper/status")
+@router.get("/scrapper/status", dependencies=[Depends(JWTUtils.validate_token)])
 async def scrapper_status():
     """Retorna o status atual do scrapping."""
     return {

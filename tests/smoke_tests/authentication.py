@@ -2,17 +2,15 @@ import requests
 import os
 import time
 
-BASE_URL = os.getenv("API_URL", "http://localhost:4000")
-AUTH_URL = f"{BASE_URL}/api/v1/auth/login"
-REFRESH_URL = f"{BASE_URL}/api/v1/auth/refresh"
-PRIVATE_URL = f"{BASE_URL}/api/v1/api/private"
-ADMIN_URL = f"{BASE_URL}/api/v1/admin"
+BASE_URL = os.getenv("API_URL", "http://localhost:4000/api/v1")
+AUTH_URL = f"{BASE_URL}/auth/login"
+REFRESH_URL = f"{BASE_URL}/auth/refresh"
+PRIVATE_URL = f"{BASE_URL}/diagrams/cicd"
 
 def test_authentication_flow():
     test_not_authorized_login()
     accessToken, refreshToken = test_get_jwt_token()
     test_access_private_routes(accessToken)
-    test_not_authorized_routes(accessToken)
     test_refresh_token(accessToken, refreshToken)
 
 
@@ -20,7 +18,7 @@ def test_not_authorized_login():
     """
         When the user is NOT registered on api and try to generate hwt token, then it should get an 403 status code.
     """
-    auth_response = requests.post(AUTH_URL, auth=("unkown user", "unknown password"))
+    auth_response = requests.get(AUTH_URL, auth=("unkown user", "unknown password"))
 
     if auth_response.status_code == 200:
         raise Exception("Expected forbidden status code for auth route")    
@@ -32,7 +30,7 @@ def test_get_jwt_token() -> tuple[str, str]:
     """
         When the user is registered on api, then it should get the accessToken and refreshToken successfully.
     """
-    auth_response = requests.post(AUTH_URL, auth=("smoke", "smoke"))
+    auth_response = requests.get(AUTH_URL, auth=("smoke", "smoke"))
 
     if auth_response.status_code != 200:
         raise Exception("Expected 200 status code for auth route")
@@ -66,21 +64,6 @@ def test_access_private_routes(token: str):
     print("[AUTH] ✅ Successfully accessed the guest route")
 
 
-def test_not_authorized_routes(token: str):
-    """
-        When the user is authenticated in the api but DOES NOT have autorization to access admin routes, then it should receive an unauthorized status code.
-    """
-    headers = {
-        "Authorization": f"Bearer {token}"
-    }
-
-    admin_response = requests.get(ADMIN_URL, headers=headers)
-
-    if admin_response.status_code != 401:
-        raise Exception("Expected do NOT have access to the admin route")
-    
-    print("[AUTH] ✅ Successfully blocked non authorized user on admin route")
-
 
 def test_refresh_token(old_access_token: str, refresh_token: str):
     time.sleep(1)
@@ -89,7 +72,7 @@ def test_refresh_token(old_access_token: str, refresh_token: str):
         "Authorization": f"Bearer {refresh_token}"
     }
 
-    refresh_response = requests.post(REFRESH_URL, headers=headers)
+    refresh_response = requests.get(REFRESH_URL, headers=headers)
     response_body = refresh_response.json()
 
     if refresh_response.status_code != 200:

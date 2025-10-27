@@ -1,16 +1,17 @@
-"""Endpoint público para executar a pipeline de processamento de dados."""
+"""Endpoint Privado para executar a pipeline de processamento de dados."""
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from src.scripts.data_processing_pipeline import run_pipeline
+from src.domain.auth.service.jwt_utils import JWTUtils
 
-router = APIRouter(prefix="/api/v1", tags=["Endpoints Core"])
+router = APIRouter(prefix="/api/v1", tags=["Data Pipeline"])
 
 # Estado da pipeline (simples para controle de execução única)
 pipeline_state = {"is_running": False}
 
 
-@router.post("/data-process", status_code=status.HTTP_202_ACCEPTED)
+@router.put("/data-process", status_code=status.HTTP_202_ACCEPTED, dependencies=[Depends(JWTUtils.validate_token)])
 async def trigger_data_process(background_tasks: BackgroundTasks):
     """
     Inicia a execução da pipeline de processamento em background.

@@ -1,10 +1,11 @@
-"""Endpoints públicos voltados ao consumo de modelos de ML."""
+"""Endpoints Privados voltados ao consumo de modelos de ML."""
 
 from __future__ import annotations
 from typing import Annotated, Any, Dict, List, Optional
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, status, Depends
 from pydantic import BaseModel, Field
 from src.scripts import ml_data
+from src.domain.auth.service.jwt_utils import JWTUtils
 
 router = APIRouter(prefix="/api/v1/ml", tags=["ML-Ready"])
 
@@ -22,7 +23,7 @@ def _df_to_records(df, limit: Optional[int] = None) -> List[Dict[str, Any]]:
     return df.to_dicts()
 
 
-@router.get("/features")
+@router.get("/features", dependencies=[Depends(JWTUtils.validate_token)])
 async def ml_features(limit: Annotated[Optional[int], Query(ge=1)] = None):
     """Retorna dados de features prontos para uso em modelos."""
     df = _handle_dataset_errors(ml_data.get_features_dataframe)
@@ -37,7 +38,7 @@ async def ml_features(limit: Annotated[Optional[int], Query(ge=1)] = None):
     }
 
 
-@router.get("/training-data")
+@router.get("/training-data", dependencies=[Depends(JWTUtils.validate_token)])
 async def ml_training_data(
     ratio: Annotated[float, Query(gt=0.0, lt=1.0)] = 0.7,
     limit: Annotated[Optional[int], Query(ge=1)] = None,
@@ -74,7 +75,7 @@ class PredictionItem(BaseModel):
     stock: int = Field(..., ge=0)
 
 
-@router.post("/predictions", status_code=status.HTTP_200_OK)
+@router.get("/predictions", status_code=status.HTTP_200_OK, dependencies=[Depends(JWTUtils.validate_token)])
 async def ml_predictions(items: List[PredictionItem]):
     """Valida payload de predições e confirma recebimento."""
     return {
