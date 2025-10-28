@@ -2,10 +2,10 @@ import requests
 import os
 import time
 
-BASE_URL = os.getenv("API_URL", "http://localhost:4000/api/v1")
-AUTH_URL = f"{BASE_URL}/auth/login"
-REFRESH_URL = f"{BASE_URL}/auth/refresh"
-PRIVATE_URL = f"{BASE_URL}/diagrams/cicd"
+BASE_URL = os.getenv("API_URL", "http://localhost:4000")
+AUTH_URL = f"{BASE_URL}/api/v1/auth/login"
+REFRESH_URL = f"{BASE_URL}/api/v1/auth/refresh"
+PRIVATE_URL = f"{BASE_URL}/api/v1/diagrams/cicd"
 
 def test_authentication_flow():
     test_not_authorized_login()
