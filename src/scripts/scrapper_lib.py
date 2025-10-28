@@ -371,12 +371,6 @@ def scrape_all_categories(session: Optional[requests.Session] = None,
     logger.info("Scrape finished: %s", summary)
     return summary
 
-def trigger_scrap(task):
+def trigger_scrap():
     s = create_session()
     scrape_all_categories(s, output_dir="data/raw", product_page_cache_dir="cache/prod_pages", per_book_delay=0.12)
-    task.setTaskState(False)
-
-# if __name__ == "__main__":
-#     s = create_session()
-#     result = scrape_all_categories(s, output_dir="data", product_page_cache_dir="cache/prod_pages", per_book_delay=0.12)
-#     print(result)
