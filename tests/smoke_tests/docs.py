@@ -8,7 +8,7 @@ DOCS_URL = f"{API_URL}/docs"
 def test_version():
     response = requests.get(VERSION_URL)
     git_hash = os.getenv("GIT_HASH")
-    api_hash = response.json()["version"]
+    api_hash = response.json().get("version", "unknown")
 
     if git_hash and (git_hash != api_hash):
         raise Exception(f"The api version (${api_hash}) is different than the expected (${git_hash})")
