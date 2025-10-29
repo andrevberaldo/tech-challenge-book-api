@@ -193,4 +193,7 @@ async def health_check():
 
 @router.get("/version")
 async def version():
-    return {"version": os.getenv("GIT_HASH", "unknown-version")}
+
+    commit = os.getenv("RENDER_GIT_COMMIT") or os.getenv("GIT_HASH") or "unknown"
+
+    return {"version": commit[:40]}
