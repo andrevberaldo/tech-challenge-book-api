@@ -111,10 +111,7 @@ def _check_db() -> Dict[str, Optional[object]]:
     if not DB_HOST:
         return {"skipped": True}
 
-    detail: Dict[str, Optional[object]] = {
-        "host": DB_HOST,
-        "port": DB_PORT,
-        "user": DB_USER or None,
+    detail: Dict[str, Optional[object]] = {        
         "name": DB_NAME or None,
         "driver": "psycopg3" if _HAS_PSYCOPG else "socket",
         "ok": False,

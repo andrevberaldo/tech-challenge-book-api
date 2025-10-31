@@ -3,27 +3,26 @@
 ```mermaid
 graph LR
     subgraph Edge[Camada de Borda]
-        CDN[CDN / WAF]
+        CDN[CDN]
         LB[Load Balancer]
     end
 
     subgraph Compute[Plano de Execução]
         subgraph Cluster[Kubernetes / ECS]
-            API1[API Pod 1]
-            API2[API Pod 2]
+            API1[API Pod/Task 1]
+            API2[API Pod/Task 2]
             APIHPA[Horizontal Pod Autoscaler]
         end
-        SIDE[Sidecar de Observabilidade
-OTel Collector]
+        SIDE[Sidecar de Observabilidade]
     end
 
     subgraph Data[Camada de Dados]
         CACHE[(Cache Redis)]
-        DB[(PostgreSQL Gerenciado)]
+        DB[(PostgreSQL)]
         STORAGE[(Object Storage
 S3/GCS - Artefatos CSV)]
         QUEUE[(Fila SQS/EventHub)]
-        REGISTRY[(Model Registry)]
+        
     end
 
     subgraph Tooling[Operações & Observabilidade]
@@ -32,7 +31,7 @@ GitHub Actions]
         MON[Monitoramento
 Grafana/Prometheus]
         LOG[Logs Centralizados]
-        TRACE[Traces]
+        TRACE[Traces/Metricas]
     end
 
     CLIENTS[Usuários & Integrações] --> CDN --> LB --> API1
@@ -50,20 +49,14 @@ Grafana/Prometheus]
 
     QUEUE --> WORKERS[Lambdas / Jobs Assíncronos]
     WORKERS --> STORAGE
-    WORKERS --> REGISTRY
-
-    CI --> CLUSTER
-    CI --> STORAGE
+    WORKERS --> DB
 
     SIDE --> TRACE
     SIDE --> LOG
-    MON --> CLUSTER
     MON --> DB
     MON --> STORAGE
     TRACE --> MON
 
-    REGISTRY --> API1
-    REGISTRY --> API2
 
     classDef infra fill:#ffffff,stroke:#8c8c8c,stroke-width:1px;
     classDef compute fill:#f0f5ff,stroke:#2f54eb,stroke-width:1px;

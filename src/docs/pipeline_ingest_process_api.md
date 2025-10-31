@@ -3,8 +3,8 @@
 ```mermaid
 flowchart LR
     subgraph Ingestao[Ingestão]
-        SCR[Scrapper
-PUT /api/v1/scrapper]
+        SCR[Scraping
+PUT /api/v1/scraping/trigger]
         RAW[(CSV Raw
 src/data/raw)]
     end
