@@ -2,7 +2,7 @@ import requests
 import os
 import time
 
-BASE_URL = os.getenv("API_URL", "http://localhost:4000")
+BASE_URL = os.getenv("API_URL", "https://book-api-mlet.onrender.com")
 AUTH_URL = f"{BASE_URL}/api/v1/auth/login"
 REFRESH_URL = f"{BASE_URL}/api/v1/auth/refresh"
 PRIVATE_URL = f"{BASE_URL}/api/v1/diagrams/cicd"
@@ -30,7 +30,7 @@ def test_get_jwt_token() -> tuple[str, str]:
     """
         When the user is registered on api, then it should get the accessToken and refreshToken successfully.
     """
-    auth_response = requests.get(AUTH_URL, auth=("smoke", "smoke"))
+    auth_response = requests.get(AUTH_URL, auth=(os.getenv("SMOKE_USER"), os.getenv("SMOKE_PASSWORD")))
 
     if auth_response.status_code != 200:
         raise Exception("Expected 200 status code for auth route")

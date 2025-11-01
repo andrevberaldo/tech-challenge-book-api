@@ -4,6 +4,7 @@ on:
     push:
         branches:
             - main
+            - change-smoke-test
     workflow_dispatch:
 
 jobs:
@@ -12,6 +13,8 @@ jobs:
         env:
             API_URL: "https://book-api-mlet.onrender.com"
             GIT_HASH: ${{ github.sha }}
+            SMOKE_USER: ${{ secrets.SMOKE_USER }}
+            SMOKE_PASSWORD: ${{ secrets.SMOKE_PASSWORD }}
 
         steps:
             - name: Checkout
