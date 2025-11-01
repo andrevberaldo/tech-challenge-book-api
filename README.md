@@ -30,6 +30,16 @@ Plataforma FastAPI criada para o Tech Challenge, focada em expor e enriquecer um
 - **Scrapper resiliente**: `requests` + `BeautifulSoup` com backoff, salvando CSV bruto em `src/data/raw`.
 - **Observabilidade pronta**: dependências de OpenTelemetry já configuradas para instrumentação opcional.
 
+## Estrutura de Pastas (resumo)
+```
+devops/            Scripts de bootstrap (Linux/Windows)
+init/              DDL e seeds do PostgreSQL
+notebooks/         Análises exploratórias e estudos prévios
+src/               Código-fonte da API, domínio e pipelines
+tests/             Suite de testes unitários e smoke
+wiki/              Conteúdo pronto para a aba Wiki do GitHub
+```
+
 ## Arquitetura em Alto Nível
 ```
 src/
@@ -49,7 +59,7 @@ Pipeline (limpeza + features) → processed/books_processed.csv → features/boo
 Rotas → servem os CSVs com cache e conversões em tempo real
 ```
 
-### Diagrama de Arquitetura (Mermaid)
+### Diagrama de Arquitetura
 ```mermaid
 flowchart LR
    subgraph Scraper
@@ -133,24 +143,6 @@ A aplicação ficará disponível em `http://localhost:4000` com documentação 
 
 Para provisionar usuários/tokens no banco, execute `init/01-schema.sql` e `init/02-seed.sql` dentro do container Postgres.
 
-## Variáveis de Ambiente
-| Nome | Obrigatório | Padrão | Descrição |
-|------|-------------|--------|-----------|
-| `JWT_SECRET` | Sim | — | Chave usada para assinar e validar JWT. |
-| `USE_DATABASE` | Não | `False` | Quando `True`, utiliza PostgreSQL em vez de repositórios em memória. |
-| `BOOKS_CSV_PATH` | Não | `src/data/raw/all_books_with_images.csv` | Fonte bruta usada no health-check. |
-| `BOOKS_PROCESSED_PATH` | Não | `src/data/processed/books_processed.csv` | Dataset servido pelas rotas públicas. |
-| `BOOK_SCRAPER_OUTPUT` | Não | `src/data/raw` | Diretório de saída do scrapper. |
-| `GIT_HASH` | Não | `unknown-version` | Hash exibido em `/api/v1/version`. |
-| `DB_HOST` | Quando `USE_DATABASE=True` | — | Host do PostgreSQL. |
-| `DB_PORT` | Não | `5432` | Porta do PostgreSQL. |
-| `DB_USER` | Quando `USE_DATABASE=True` | — | Usuário do PostgreSQL. |
-| `DB_PASSWORD` | Quando `USE_DATABASE=True` | — | Senha do PostgreSQL. |
-| `DB_NAME` | Não | `book-api` | Nome do banco. |
-| `DB_SSLMODE` | Não | `prefer` | Modo SSL para psycopg (health-check). |
-| `DB_CONNECT_TIMEOUT` | Não | `3` | Timeout (s) para psycopg. |
-| `DB_TCP_TIMEOUT` | Não | `2.5` | Timeout (s) para fallback TCP. |
-
 ## Autenticação e Autorização
 1. `GET /api/v1/auth/login` — exige `Authorization: Basic`, retorna `accessToken` (curta duração) e `refreshToken`.
 2. `GET /api/v1/auth/refresh` — recebe `Authorization: Bearer <refreshToken>` e devolve novo `accessToken`.
@@ -177,8 +169,8 @@ Para provisionar usuários/tokens no banco, execute `init/01-schema.sql` e `init
 Consulte a [Documentação das Rotas](https://github.com/andrevberaldo/tech-challenge-book-api/wiki/Documenta%C3%A7%C3%A3o-das-Rotas) para parâmetros, payloads e respostas detalhadas.
 
 ## Pipeline de Dados e Scrapper
-- **Scrapper**: disparo via `PUT /api/v1/scrapper` ou execução direta `python -c "from src.scripts.scrapper_lib import trigger_scrap; trigger_scrap()"`.
-- **Pipeline completa**: `PUT /api/v1/data-process` ou `python -m src.scripts.data_processing_pipeline`.
+- **Scrapper**: disparo via `PUT /api/v1/scrapper`.
+- **Pipeline completa**: `PUT /api/v1/data-process`.
 - **Artefatos gerados**: diretórios `src/data/raw/`, `src/data/processed/`, `src/data/features/`.
 - **Cache inteligente**: endpoints invalidam caches automaticamente com base no `mtime` dos arquivos.
 
@@ -190,23 +182,32 @@ pytest
 - `tests/smoke_tests/`: verificação rápida pós-deploy.
 - `tests/run_tests.py`: entry point auxiliar para execução dos testes.
 
-## Estrutura de Pastas (resumo)
-```
-devops/            Scripts de bootstrap (Linux/Windows)
-init/              DDL e seeds do PostgreSQL
-notebooks/         Análises exploratórias e estudos prévios
-src/               Código-fonte da API, domínio e pipelines
-tests/             Suite de testes unitários e smoke
-wiki/              Conteúdo pronto para a aba Wiki do GitHub
-```
+## Variáveis de Ambiente
+| Nome | Obrigatório | Padrão | Descrição |
+|------|-------------|--------|-----------|
+| `JWT_SECRET` | Sim | — | Chave usada para assinar e validar JWT. |
+| `USE_DATABASE` | Não | `False` | Quando `True`, utiliza PostgreSQL em vez de repositórios em memória. |
+| `BOOKS_CSV_PATH` | Não | `src/data/raw/all_books_with_images.csv` | Fonte bruta usada no health-check. |
+| `BOOKS_PROCESSED_PATH` | Não | `src/data/processed/books_processed.csv` | Dataset servido pelas rotas públicas. |
+| `BOOK_SCRAPER_OUTPUT` | Não | `src/data/raw` | Diretório de saída do scrapper. |
+| `GIT_HASH` | Não | `unknown-version` | Hash exibido em `/api/v1/version`. |
+| `DB_HOST` | Quando `USE_DATABASE=True` | — | Host do PostgreSQL. |
+| `DB_PORT` | Não | `5432` | Porta do PostgreSQL. |
+| `DB_USER` | Quando `USE_DATABASE=True` | — | Usuário do PostgreSQL. |
+| `DB_PASSWORD` | Quando `USE_DATABASE=True` | — | Senha do PostgreSQL. |
+| `DB_NAME` | Não | `book-api` | Nome do banco. |
+| `DB_SSLMODE` | Não | `prefer` | Modo SSL para psycopg (health-check). |
+| `DB_CONNECT_TIMEOUT` | Não | `3` | Timeout (s) para psycopg. |
+| `DB_TCP_TIMEOUT` | Não | `2.5` | Timeout (s) para fallback TCP. |
 
-## 🙌 Contribuição
+## Contribuição
 - Abra issues ou pull requests descrevendo claramente a alteração proposta.
 - Garanta que os testes relevantes estejam passando (`pytest`).
 - Atualize a Wiki sempre que novos fluxos ou diagramas forem adicionados.
 
 ---
 Projeto mantido por `andrevberaldo` e colaboradores do Tech Challenge.
+
 
 
 
