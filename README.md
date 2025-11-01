@@ -2,7 +2,7 @@
 Plataforma FastAPI criada para o Tech Challenge, focada em expor e enriquecer um catálogo de livros obtido via web scraping do site `books.toscrape.com`. O projeto combina coleta automatizada, pipelines de dados, autenticação JWT e rotas especializadas para análises e preparação de dados para Machine Learning.
 
 ## Links Rápidos
-- **Link do Deploy**: *TODO*
+- **Link do Deploy**: [https://book-api-mlet.onrender.com](https://book-api-mlet.onrender.com/)
 - **Vídeo de Demonstração**: *TODO*
 - **Documentação Completa (Wiki)**
   - [Home da Wiki](https://github.com/andrevberaldo/tech-challenge-book-api/wiki/Tech-Challenge-Book-API)
@@ -204,3 +204,4 @@ wiki/              Conteúdo pronto para a aba Wiki do GitHub
 
 ---
 Projeto mantido por `andrevberaldo` e colaboradores do Tech Challenge.
+
