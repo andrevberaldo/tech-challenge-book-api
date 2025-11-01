@@ -30,7 +30,7 @@ def test_get_jwt_token() -> tuple[str, str]:
     """
         When the user is registered on api, then it should get the accessToken and refreshToken successfully.
     """
-    auth_response = requests.get(AUTH_URL, auth=("smoke", "smoke"))
+    auth_response = requests.get(AUTH_URL, auth=(os.getenv("SMOKE_USER"), os.getenv("SMOKE_PASSWORD")))
 
     if auth_response.status_code != 200:
         raise Exception("Expected 200 status code for auth route")

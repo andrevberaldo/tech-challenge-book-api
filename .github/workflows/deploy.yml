@@ -4,6 +4,7 @@ on:
     push:
         branches:
             - main
+            - change-smoke-test
     workflow_dispatch:
 
 jobs:
