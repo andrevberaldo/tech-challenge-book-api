@@ -171,7 +171,8 @@ Para provisionar usuários/tokens no banco, execute `init/01-schema.sql` e `init
 | GET | `/api/v1/ml/features` | Dataset de features para ML. | Bearer |
 | GET | `/api/v1/diagrams/*` | Diagramas HTML do projeto. | Bearer |
 | PUT | `/api/v1/data-process` | Dispara pipeline de processamento de dados. | Bearer |
-| PUT | `/api/v1/scrapper` | Inicia scraping em background. | Bearer |
+| PUT | `/api/v1/scraping/trigger` | Inicia scraping em background. | Bearer |
+| GET | `/api/v1/scraping/status` | Verifica o status do scraping. | Bearer |
 
 Consulte a [Documentação das Rotas](https://github.com/andrevberaldo/tech-challenge-book-api/wiki/Documenta%C3%A7%C3%A3o-das-Rotas) para parâmetros, payloads e respostas detalhadas.
 
@@ -206,5 +207,6 @@ wiki/              Conteúdo pronto para a aba Wiki do GitHub
 
 ---
 Projeto mantido por `andrevberaldo` e colaboradores do Tech Challenge.
+
 
 
