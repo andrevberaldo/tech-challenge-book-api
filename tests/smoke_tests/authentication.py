@@ -2,7 +2,7 @@ import requests
 import os
 import time
 
-BASE_URL = os.getenv("API_URL", "http://localhost:4000")
+BASE_URL = os.getenv("API_URL", "https://book-api-mlet.onrender.com")
 AUTH_URL = f"{BASE_URL}/api/v1/auth/login"
 REFRESH_URL = f"{BASE_URL}/api/v1/auth/refresh"
 PRIVATE_URL = f"{BASE_URL}/api/v1/diagrams/cicd"
