@@ -7,10 +7,12 @@ Plataforma FastAPI criada para o Tech Challenge, focada em expor e enriquecer um
 - **Documentação Completa (Wiki)**
   - [Home da Wiki](https://github.com/andrevberaldo/tech-challenge-book-api/wiki/Tech-Challenge-Book-API)
   - [Visão Geral e Arquitetura](https://github.com/andrevberaldo/tech-challenge-book-api/wiki/Vis%C3%A3o-Geral-e-Arquitetura)
+  - [Diagramas](https://github.com/andrevberaldo/tech-challenge-book-api/wiki/Diagramas-e-Fluxogramas-da-aplica%C3%A7%C3%A3o)
   - [Instalação e Configuração](https://github.com/andrevberaldo/tech-challenge-book-api/wiki/Instala%C3%A7%C3%A3o-e-Configura%C3%A7%C3%A3o)
   - [Documentação das Rotas](https://github.com/andrevberaldo/tech-challenge-book-api/wiki/Documenta%C3%A7%C3%A3o-das-Rotas)
   - [Exemplos de Chamadas HTTP](https://github.com/andrevberaldo/tech-challenge-book-api/wiki/Exemplos-de-Chamadas-HTTP)
   - [Operação e Execução](https://github.com/andrevberaldo/tech-challenge-book-api/wiki/Opera%C3%A7%C3%A3o-e-Execu%C3%A7%C3%A3o)
+  - [Pipeline de CICD](https://github.com/andrevberaldo/tech-challenge-book-api/blob/main/.github/workflows/deploy.yml)
 
 > A Wiki acompanha este README e aprofunda todos os tópicos: arquitetura, fluxo de dados, automações, exemplos de requisições e checklists operacionais.
 
@@ -204,4 +206,5 @@ wiki/              Conteúdo pronto para a aba Wiki do GitHub
 
 ---
 Projeto mantido por `andrevberaldo` e colaboradores do Tech Challenge.
+
 
