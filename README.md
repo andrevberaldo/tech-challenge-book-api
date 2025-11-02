@@ -3,7 +3,7 @@ Plataforma FastAPI criada para o Tech Challenge, focada em expor e enriquecer um
 
 ## Links Rápidos
 - **Link do Deploy**: [https://book-api-mlet.onrender.com](https://book-api-mlet.onrender.com/)
-- **Vídeo de Demonstração**: *TODO*
+- **Vídeo de Demonstração**: [https://www.youtube.com/watch?v=C4r9awhhvMc](https://www.youtube.com/watch?v=C4r9awhhvMc)
 - **Documentação Completa (Wiki)**
   - [Home da Wiki](https://github.com/andrevberaldo/tech-challenge-book-api/wiki/Tech-Challenge-Book-API)
   - [Visão Geral e Arquitetura](https://github.com/andrevberaldo/tech-challenge-book-api/wiki/Vis%C3%A3o-Geral-e-Arquitetura)
@@ -207,6 +207,7 @@ pytest
 
 ---
 Projeto mantido por `andrevberaldo` e colaboradores do Tech Challenge.
+
 
 
 
